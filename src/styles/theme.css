@@ -1,0 +1,15 @@
+:root {
+  --color-bg: #d7ecf7;
+  --color-paper: #fff6e6;
+  --color-paper-deep: #f1dfc1;
+  --color-primary: #f2b84b;
+  --color-primary-deep: #c9792e;
+  --color-blue: #79bde0;
+  --color-blue-deep: #1f73a5;
+  --color-green: #96c38a;
+  --color-text: #4a3326;
+  --color-muted: #7a6658;
+  --radius-card: 24px;
+  --shadow-soft: 0 10px 24px rgba(80, 60, 40, 0.14);
+  --shadow-button: 0 8px 0 rgba(160, 101, 35, 0.22);
+}
