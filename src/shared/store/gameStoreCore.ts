@@ -1,19 +1,11 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useReducer,
-  type Dispatch,
-  type PropsWithChildren,
-} from 'react'
+import { createContext, type Dispatch } from 'react'
 import { getBadgeProgressAfterCompletion, getBadgeKey } from '../utils/rewards'
 import { createRealLifeTask } from '../utils/practice'
 import type { LevelResult, PlayerProgress, RealLifeTask } from '../types/game'
 
-const STORAGE_KEY = 'starbridge-demo-progress:v1'
+export const STORAGE_KEY = 'starbridge-demo-progress:v1'
 
-const initialProgress: PlayerProgress = {
+export const initialProgress: PlayerProgress = {
   totalStars: 0,
   todayStars: 0,
   completedLevelIds: [],
@@ -31,7 +23,7 @@ const initialProgress: PlayerProgress = {
   realLifeTasks: [],
 }
 
-type GameAction =
+export type GameAction =
   | { type: 'completeLevel'; result: LevelResult }
   | { type: 'collectCards'; cardIds: string[] }
   | { type: 'addStars'; count: number }
@@ -41,7 +33,7 @@ type GameAction =
   | { type: 'addBuddyExp'; exp: number }
   | { type: 'resetDemoProgress' }
 
-type GameActions = {
+export type GameActions = {
   completeLevel(result: LevelResult): void
   collectCards(cardIds: string[]): void
   addStars(count: number): void
@@ -52,36 +44,14 @@ type GameActions = {
   resetDemoProgress(): void
 }
 
-type GameStore = {
+export type GameStore = {
   progress: PlayerProgress
   actions: GameActions
 }
 
-const GameStoreContext = createContext<GameStore | null>(null)
+export const GameStoreContext = createContext<GameStore | null>(null)
 
-export function GameProvider({ children }: PropsWithChildren) {
-  const [progress, dispatch] = useReducer(gameReducer, undefined, loadProgress)
-  const actions = useMemo(() => createActions(dispatch), [])
-  const value = useMemo(() => ({ progress, actions }), [actions, progress])
-
-  useEffect(() => {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(progress))
-  }, [progress])
-
-  return <GameStoreContext.Provider value={value}>{children}</GameStoreContext.Provider>
-}
-
-export function useGameStore() {
-  const store = useContext(GameStoreContext)
-
-  if (!store) {
-    throw new Error('useGameStore must be used inside GameProvider')
-  }
-
-  return store
-}
-
-function createActions(dispatch: Dispatch<GameAction>): GameActions {
+export function createActions(dispatch: Dispatch<GameAction>): GameActions {
   return {
     completeLevel(result) {
       dispatch({ type: 'completeLevel', result })
@@ -110,7 +80,7 @@ function createActions(dispatch: Dispatch<GameAction>): GameActions {
   }
 }
 
-function gameReducer(state: PlayerProgress, action: GameAction): PlayerProgress {
+export function gameReducer(state: PlayerProgress, action: GameAction): PlayerProgress {
   switch (action.type) {
     case 'completeLevel': {
       if (state.completedLevelIds.includes(action.result.levelId)) {
@@ -145,6 +115,35 @@ function gameReducer(state: PlayerProgress, action: GameAction): PlayerProgress 
       return { ...state, buddyGrowth: addBuddyExpToGrowth(state.buddyGrowth, action.exp) }
     case 'resetDemoProgress':
       return initialProgress
+  }
+}
+
+export function loadProgress(): PlayerProgress {
+  if (typeof window === 'undefined') {
+    return initialProgress
+  }
+
+  try {
+    const rawProgress = window.localStorage.getItem(STORAGE_KEY)
+    if (!rawProgress) {
+      return initialProgress
+    }
+
+    const parsedProgress = JSON.parse(rawProgress) as PlayerProgress
+    return {
+      ...initialProgress,
+      ...parsedProgress,
+      badgeProgress: {
+        ...initialProgress.badgeProgress,
+        ...parsedProgress.badgeProgress,
+      },
+      buddyGrowth: {
+        ...initialProgress.buddyGrowth,
+        ...parsedProgress.buddyGrowth,
+      },
+    }
+  } catch {
+    return initialProgress
   }
 }
 
@@ -230,34 +229,5 @@ function addBuddyExpToGrowth(
   return {
     stage: Math.min(3, Math.floor(nextExp / 30) + 1),
     exp: nextExp,
-  }
-}
-
-function loadProgress(): PlayerProgress {
-  if (typeof window === 'undefined') {
-    return initialProgress
-  }
-
-  try {
-    const rawProgress = window.localStorage.getItem(STORAGE_KEY)
-    if (!rawProgress) {
-      return initialProgress
-    }
-
-    const parsedProgress = JSON.parse(rawProgress) as PlayerProgress
-    return {
-      ...initialProgress,
-      ...parsedProgress,
-      badgeProgress: {
-        ...initialProgress.badgeProgress,
-        ...parsedProgress.badgeProgress,
-      },
-      buddyGrowth: {
-        ...initialProgress.buddyGrowth,
-        ...parsedProgress.buddyGrowth,
-      },
-    }
-  } catch {
-    return initialProgress
   }
 }
