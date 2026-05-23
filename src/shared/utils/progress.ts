@@ -6,7 +6,7 @@ export const skillLabels: Record<SkillTag, string> = {
   express_need: '主动表达需求',
   greeting: '友好打招呼',
   ask_help: '请求帮助',
-  recognize_emotion: '识别情绪',
+  recognize_emotion: '识别开心 / 难过',
   understand_others: '理解他人感受',
   use_polite_words: '使用请和谢谢',
   take_turns: '轮流互动',

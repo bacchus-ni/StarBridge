@@ -32,8 +32,8 @@ export function getBadgeKey(islandId: IslandId) {
       return 'brave-expression'
     case 'emotion_match':
       return 'emotion-helper'
-    case 'polite_runner':
-      return 'polite-friend'
+    case 'greeting_match':
+      return 'friendly-speech'
   }
 }
 

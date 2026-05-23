@@ -2,7 +2,7 @@ import type { ReactElement } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, Gift, Sparkles } from 'lucide-react'
 import { EmotionMatchGame } from '../features/levels/EmotionMatchGame'
-import { PoliteRunnerGame } from '../features/levels/PoliteRunnerGame'
+import { FriendlySpeechMatchGame } from '../features/levels/FriendlySpeechMatchGame'
 import { SentenceBlocksGame } from '../features/levels/SentenceBlocksGame'
 import { Button } from '../shared/components/Button'
 import { Card } from '../shared/components/Card'
@@ -28,7 +28,12 @@ export function LevelPage() {
 
   const GameComponent = level ? levelComponents[level.mechanic] : null
 
-  if ((level?.mechanic === 'sentence_blocks' || level?.mechanic === 'emotion_match') && GameComponent) {
+  if (
+    (level?.mechanic === 'sentence_blocks' ||
+      level?.mechanic === 'emotion_match' ||
+      level?.mechanic === 'friendly_speech_match') &&
+    GameComponent
+  ) {
     return (
       <GameComponent
         difficulty={level.difficulty}
@@ -112,5 +117,5 @@ export function LevelPage() {
 const levelComponents: Record<string, (props: LevelComponentProps) => ReactElement> = {
   sentence_blocks: SentenceBlocksGame,
   emotion_match: EmotionMatchGame,
-  polite_runner: PoliteRunnerGame,
+  friendly_speech_match: FriendlySpeechMatchGame,
 }

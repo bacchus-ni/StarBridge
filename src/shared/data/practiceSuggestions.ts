@@ -14,11 +14,15 @@ export const practiceSuggestionTemplates: Record<SkillTag, PracticeSuggestion> =
     relatedSkill: 'express_need',
   },
   greeting: {
-    id: 'hello-neighbor',
-    title: '出门前：练习友好打招呼',
-    scenario: '出门遇到熟悉的人之前，先在家里和孩子练一次。',
-    steps: ['示范说“你好”。', '让孩子选择说、点图卡或挥手。', '完成后立即肯定：“你刚刚在打招呼。”'],
-    parentTip: '不要求声音大小，只关注孩子愿意开始互动。',
+    id: 'friendly-speech',
+    title: '放学路上：选择友好话语',
+    scenario: '遇到同学、老师或家人需要帮助时，先停下来看看发生了什么。',
+    steps: [
+      '家长先描述场景：“你看到同学了，可以说什么？”',
+      '给出两个清晰选项，如“早上好”或“我想休息一下”。',
+      '孩子说出、点选或用动作表达后，家长温和复述并回应。',
+    ],
+    parentTip: '先观察场景，再选择话语；不要求一次说完整，能做出合适选择就算完成。',
     relatedSkill: 'greeting',
   },
   ask_help: {

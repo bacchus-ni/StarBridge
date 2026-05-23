@@ -21,13 +21,13 @@ export const islands: IslandConfig[] = [
     levels: levels.filter((level) => level.islandId === 'emotion_match'),
   },
   {
-    id: 'polite_runner',
-    name: '礼貌语跑酷镇',
-    description: '收集请、谢谢和对不起',
-    route: '/level/polite-basic-01',
-    badgeId: 'polite-friend',
-    themeSkill: 'use_polite_words',
-    levels: levels.filter((level) => level.islandId === 'polite_runner'),
+    id: 'greeting_match',
+    name: '问候岛',
+    description: '看看场景，连到合适的友好话语',
+    route: '/level/greeting-basic-01',
+    badgeId: 'friendly-speech',
+    themeSkill: 'greeting',
+    levels: levels.filter((level) => level.islandId === 'greeting_match'),
   },
 ]
 

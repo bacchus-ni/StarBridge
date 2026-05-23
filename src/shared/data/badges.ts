@@ -16,11 +16,11 @@ export const badges: BadgeConfig[] = [
     unlockText: '情绪消消乐湖三档任务全部完成后解锁。',
   },
   {
-    id: 'polite-friend',
-    islandId: 'polite_runner',
-    name: '友好互动徽章',
-    description: '能在互动中使用请、谢谢、对不起等礼貌语。',
-    unlockText: '礼貌语跑酷镇三档任务全部完成后解锁。',
+    id: 'friendly-speech',
+    islandId: 'greeting_match',
+    name: '友好徽章',
+    description: '能先观察发生了什么，再选择合适的友好话语。',
+    unlockText: '完成问候岛的友好话语连连看后解锁。',
   },
 ]
 

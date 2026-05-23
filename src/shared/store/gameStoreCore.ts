@@ -13,7 +13,7 @@ export const initialProgress: PlayerProgress = {
   badgeProgress: {
     'brave-expression': 0,
     'emotion-helper': 0,
-    'polite-friend': 0,
+    'friendly-speech': 0,
   },
   buddyGrowth: {
     stage: 1,

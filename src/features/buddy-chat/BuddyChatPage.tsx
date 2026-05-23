@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { useMemo, useState } from 'react'
 import {
   ChevronRight,
@@ -16,6 +17,7 @@ import {
   Plus,
 } from 'lucide-react'
 import { buddyChatArt } from '../../shared/assets/buddyChatArt'
+import { artAssets } from '../../shared/assets/art'
 import { Button } from '../../shared/components/Button'
 import { Card } from '../../shared/components/Card'
 import { PageShell } from '../../shared/components/PageShell'
@@ -66,6 +68,9 @@ function getDeepseekStatusMessage(response: DeepseekChatResponse) {
 }
 
 export function BuddyChatPage() {
+  const shellStyle = {
+    '--world-background-image': `url(${artAssets.homeBackground})`,
+  } as CSSProperties
   const [collapsed, setCollapsed] = useState(false)
   const [activeThreadId, setActiveThreadId] = useState(buddyChatDefaultThreadId)
   const [draft, setDraft] = useState('')
@@ -173,7 +178,7 @@ export function BuddyChatPage() {
   }
 
   return (
-    <PageShell activePath="/game">
+    <PageShell activePath="/game" className="app-shell-world-bg" style={shellStyle}>
       <div className="buddy-chat-layout">
         <aside className={collapsed ? 'buddy-chat-sidebar is-collapsed' : 'buddy-chat-sidebar'}>
           <div className="buddy-chat-sidebar-top">

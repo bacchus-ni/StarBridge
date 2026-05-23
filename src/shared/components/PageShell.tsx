@@ -1,22 +1,23 @@
-import type { PropsWithChildren } from 'react'
+import type { CSSProperties, PropsWithChildren } from 'react'
 import { Link } from 'react-router-dom'
-import { Info, Map, Trophy, Users } from 'lucide-react'
+import { Info, Map, Users } from 'lucide-react'
 import { artAssets } from '../assets/art'
 
 const navItems = [
   { to: '/game', label: '游戏世界', icon: Map },
-  { to: '/achievements', label: '游戏成就', icon: Trophy },
   { to: '/parent', label: '家长端', icon: Users },
   { to: '/about-autism', label: '了解来自星星的孩子', icon: Info },
 ]
 
 type PageShellProps = PropsWithChildren<{
   activePath: '/game' | '/achievements' | '/parent' | '/about-autism'
+  className?: string
+  style?: CSSProperties
 }>
 
-export function PageShell({ activePath, children }: PageShellProps) {
+export function PageShell({ activePath, children, className, style }: PageShellProps) {
   return (
-    <div className="app-shell">
+    <div className={className ? `app-shell ${className}` : 'app-shell'} style={style}>
       <header className="app-header">
         <Link className="brand" to="/game" aria-label="星桥计划首页">
           <img className="brand-logo" src={artAssets.logo} alt="" />
