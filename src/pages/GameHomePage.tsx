@@ -31,7 +31,7 @@ export function GameHomePage() {
       </section>
 
       <section className="world-layout" aria-labelledby="map-title">
-        <Card className="side-rail" aria-label="功能入口">
+        <Card className="side-rail page-nav-cards" aria-label="功能入口">
           <Link className="rail-item is-active" to="/game">
             <img className="rail-art" src={artAssets.map} alt="" />
             地图
@@ -45,7 +45,6 @@ export function GameHomePage() {
             伙伴
           </Link>
         </Card>
-
         <Card className="map-panel">
           <div className="section-heading">
             <p className="section-label">游戏世界</p>

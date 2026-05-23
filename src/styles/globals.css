@@ -267,6 +267,13 @@ h3 {
   align-content: start;
 }
 
+.page-nav-cards {
+  padding: 0;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
 .rail-item {
   min-height: 108px;
   flex-direction: column;
