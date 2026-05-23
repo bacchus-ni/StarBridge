@@ -1,9 +1,10 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import type { Plugin } from 'vite'
+import { deepseekProxyPlugin } from './vite.deepseek'
 
 type SentenceCompletionRecord = {
   levelId: string
@@ -114,9 +115,28 @@ function localProgressFilePlugin(): Plugin {
 }
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [react(), localProgressFilePlugin()],
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+
+  return {
+    plugins: [
+      react(),
+      localProgressFilePlugin(),
+      deepseekProxyPlugin({
+        apiKey: firstEnvValue(env.DEEPSEEK_API_KEY, env.VITE_DEEPSEEK_API_KEY),
+        apiBaseUrl: firstEnvValue(env.DEEPSEEK_API_BASE_URL),
+        model: firstEnvValue(env.DEEPSEEK_MODEL),
+      }),
+    ],
+    server: {
+      host: '0.0.0.0',
+    },
+  }
 })
+
+function firstEnvValue(...values: Array<string | undefined>) {
+  return values.find((value) => value?.trim())?.trim()
+}
 
 async function readSentenceProgress(): Promise<SentenceProgressFile> {
   try {

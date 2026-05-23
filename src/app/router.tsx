@@ -4,6 +4,7 @@ import { AboutAutismPage } from '../pages/AboutAutismPage'
 import { GameHomePage } from '../pages/GameHomePage'
 import { LevelPage } from '../pages/LevelPage'
 import { ParentPage } from '../pages/ParentPage'
+import { BuddyChatPage } from '../features/buddy-chat/BuddyChatPage'
 
 export const router = createBrowserRouter([
   { path: '/', element: <GameHomePage /> },
@@ -12,4 +13,5 @@ export const router = createBrowserRouter([
   { path: '/parent', element: <ParentPage /> },
   { path: '/about-autism', element: <AboutAutismPage /> },
   { path: '/level/:levelId', element: <LevelPage /> },
+  { path: '/buddy-chat', element: <BuddyChatPage /> },
 ])

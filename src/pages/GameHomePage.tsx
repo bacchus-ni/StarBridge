@@ -18,7 +18,7 @@ export function GameHomePage() {
             <Medal />
             徽章
           </Link>
-          <Link className="rail-item" to="/parent">
+          <Link className="rail-item" to="/buddy-chat">
             <Sparkles />
             伙伴
           </Link>
@@ -41,7 +41,9 @@ export function GameHomePage() {
                   今天我们一起收集 3 颗星星，练习表达、情绪和礼貌互动。
                 </p>
               </div>
-              <img className="buddy-art" src={artAssets.deer} alt="" />
+              <Link className="buddy-art-link" to="/buddy-chat" aria-label="打开伙伴聊天">
+                <img className="buddy-art" src={artAssets.deer} alt="" />
+              </Link>
             </Card>
           </section>
 
