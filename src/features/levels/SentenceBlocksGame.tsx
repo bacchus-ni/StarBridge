@@ -1,10 +1,17 @@
-import { useMemo, useState } from 'react'
-import { ArrowLeft, Lightbulb, RotateCcw } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { ArrowLeft, Check, Lightbulb, RotateCcw } from 'lucide-react'
 import { Button } from '../../shared/components/Button'
 import { sentenceGameArt } from '../../shared/assets/sentenceGameArt'
-import type { LevelComponentProps } from '../../shared/types/game'
+import { useGameStore } from '../../shared/store/useGameStore'
+import type { Difficulty, LevelComponentProps } from '../../shared/types/game'
 import { speak } from '../../shared/utils/speech'
 import { createLevelResult } from '../../shared/utils/rewards'
+import {
+  loadSentenceProgressFile,
+  saveSentenceCompletionRecord,
+  type SentenceProgressFile,
+} from '../../shared/services/sentenceProgressFile'
 
 type BlockKind = 'person' | 'expression' | 'object'
 
@@ -15,11 +22,25 @@ type BlockOption = {
   image: string
 }
 
+type SentenceLevelId = (typeof sentenceLevelOrder)[number]
+
 type SentenceRound = {
+  id: SentenceLevelId
+  order: number
+  title: string
+  difficulty: Difficulty
+  difficultyLabel: string
   prompt: string
   target: Record<BlockKind, string>
+  optionIds: Record<BlockKind, string[]>
   encouragement: string
 }
+
+const sentenceLevelOrder = [
+  'sentence-basic-01',
+  'sentence-medium-01',
+  'sentence-advanced-01',
+] as const
 
 const people: BlockOption[] = [
   { id: 'me', kind: 'person', label: '我', image: sentenceGameArt.tiles.boy },
@@ -42,29 +63,59 @@ const objects: BlockOption[] = [
   { id: 'cookies', kind: 'object', label: '饼干', image: sentenceGameArt.tiles.cookies },
 ]
 
-const roundsByLevel: Record<string, SentenceRound> = {
-  'sentence-basic-01': {
-    prompt: '先选谁在说，再选怎么表达，最后选要什么哦！',
-    target: { person: 'me', expression: 'want', object: 'water' },
-    encouragement: '你用积木告诉我你想喝水，我听懂了。',
-  },
-  'sentence-medium-01': {
-    prompt: '把请求帮助的话拼完整，说清楚会更容易被听见。',
-    target: { person: 'me', expression: 'more', object: 'cookies' },
-    encouragement: '你把“我还要饼干”拼出来了，表达很清楚。',
-  },
-  'sentence-advanced-01': {
-    prompt: '试试看用温和的方式表达不想要的东西。',
-    target: { person: 'me', expression: 'no', object: 'veggies' },
-    encouragement: '你会说“我不要青菜”，也能好好表达自己的想法。',
-  },
-}
-
-const groups = [
+const optionGroups = [
   { kind: 'person' as const, label: '人物积木', tone: 'blue', options: people },
   { kind: 'expression' as const, label: '表达积木', tone: 'green', options: expressions },
   { kind: 'object' as const, label: '食物和餐具积木', tone: 'coral', options: objects },
 ]
+
+const roundsByLevel: Record<SentenceLevelId, SentenceRound> = {
+  'sentence-basic-01': {
+    id: 'sentence-basic-01',
+    order: 1,
+    title: '我想要水',
+    difficulty: 'basic',
+    difficultyLabel: '简单',
+    prompt: '只从少量积木里找出“我想要水”。',
+    target: { person: 'me', expression: 'want', object: 'water' },
+    optionIds: {
+      person: ['me', 'mom'],
+      expression: ['want', 'no'],
+      object: ['water', 'cookies', 'rice'],
+    },
+    encouragement: '第一颗表达星点亮！你清楚地说出了“我想要水”。',
+  },
+  'sentence-medium-01': {
+    id: 'sentence-medium-01',
+    order: 2,
+    title: '我还要饼干',
+    difficulty: 'medium',
+    difficultyLabel: '进阶',
+    prompt: '积木变多了，请拼出“我还要饼干”。',
+    target: { person: 'me', expression: 'more', object: 'cookies' },
+    optionIds: {
+      person: ['me', 'mom', 'teacher', 'friend'],
+      expression: ['want', 'no', 'more'],
+      object: ['water', 'spoon', 'cookies', 'rice'],
+    },
+    encouragement: '第二颗表达星点亮！你会用“还要”表达继续需要。',
+  },
+  'sentence-advanced-01': {
+    id: 'sentence-advanced-01',
+    order: 3,
+    title: '我不要青菜',
+    difficulty: 'advanced',
+    difficultyLabel: '挑战',
+    prompt: '选项最多，请温和地拼出“我不要青菜”。',
+    target: { person: 'me', expression: 'no', object: 'veggies' },
+    optionIds: {
+      person: ['me', 'mom', 'teacher', 'friend'],
+      expression: ['want', 'no', 'more'],
+      object: ['rice', 'water', 'spoon', 'veggies', 'cookies'],
+    },
+    encouragement: '三颗表达星集齐！你能把想要和不想要都说清楚了。',
+  },
+}
 
 const kindLabels: Record<BlockKind, string> = {
   person: '先选谁',
@@ -73,11 +124,65 @@ const kindLabels: Record<BlockKind, string> = {
 }
 
 export function SentenceBlocksGame({ levelId, onComplete, onExit }: LevelComponentProps) {
-  const round = roundsByLevel[levelId] ?? roundsByLevel['sentence-basic-01']
+  const navigate = useNavigate()
+  const { progress } = useGameStore()
+  const activeLevelId = isSentenceLevelId(levelId) ? levelId : 'sentence-basic-01'
+  const round = roundsByLevel[activeLevelId]
   const [selected, setSelected] = useState<Partial<Record<BlockKind, string>>>({})
   const [hintCount, setHintCount] = useState(0)
-  const [complete, setComplete] = useState(false)
+  const [justCompleted, setJustCompleted] = useState(false)
   const [feedback, setFeedback] = useState(round.prompt)
+  const [fileProgress, setFileProgress] = useState<SentenceProgressFile | null>(null)
+  const [saveStatus, setSaveStatus] = useState('完成后会保存到 local-data/sentence-progress.json')
+
+  useEffect(() => {
+    let cancelled = false
+
+    loadSentenceProgressFile().then((nextProgress) => {
+      if (!cancelled) {
+        setFileProgress(nextProgress)
+      }
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const fileCompletedIds = useMemo(
+    () => new Set(fileProgress?.completedLevelIds ?? []),
+    [fileProgress],
+  )
+  const completedSentenceIds = useMemo(
+    () =>
+      new Set(
+        sentenceLevelOrder.filter(
+          (id) => progress.completedLevelIds.includes(id) || fileCompletedIds.has(id),
+        ),
+    ),
+    [fileCompletedIds, progress.completedLevelIds],
+  )
+  const displayedCompletedIds = useMemo(() => {
+    const nextIds = new Set(completedSentenceIds)
+    if (justCompleted) {
+      nextIds.add(activeLevelId)
+    }
+
+    return nextIds
+  }, [activeLevelId, completedSentenceIds, justCompleted])
+
+  const currentLevelCompleted = displayedCompletedIds.has(activeLevelId)
+  const expressionStars = Math.min(3, displayedCompletedIds.size)
+  const nextLevelId = sentenceLevelOrder[round.order]
+
+  const visibleGroups = useMemo(
+    () =>
+      optionGroups.map((group) => ({
+        ...group,
+        options: group.options.filter((option) => round.optionIds[group.kind].includes(option.id)),
+      })),
+    [round],
+  )
 
   const selectedOptions = useMemo(
     () => ({
@@ -110,12 +215,14 @@ export function SentenceBlocksGame({ levelId, onComplete, onExit }: LevelCompone
 
   function pick(option: BlockOption) {
     setSelected((current) => ({ ...current, [option.kind]: option.id }))
-    setComplete(false)
+    setJustCompleted(false)
     setFeedback(`${kindLabels[option.kind]}：${option.label}`)
   }
 
   function applyHint() {
-    const nextKind = (['person', 'expression', 'object'] as BlockKind[]).find((kind) => selected[kind] !== round.target[kind])
+    const nextKind = (['person', 'expression', 'object'] as BlockKind[]).find(
+      (kind) => selected[kind] !== round.target[kind],
+    )
 
     if (!nextKind) {
       setFeedback('已经拼对啦，可以点亮表达星。')
@@ -128,30 +235,64 @@ export function SentenceBlocksGame({ levelId, onComplete, onExit }: LevelCompone
   }
 
   function shufflePreset() {
+    const optionIds = round.optionIds
     const presets: Array<Record<BlockKind, string>> = [
-      { person: 'me', expression: 'no', object: 'veggies' },
-      { person: 'me', expression: 'more', object: 'cookies' },
-      { person: 'me', expression: 'want', object: 'water' },
+      {
+        person: 'me',
+        expression: optionIds.expression.includes('no') ? 'no' : optionIds.expression[0],
+        object: optionIds.object.includes('veggies') ? 'veggies' : optionIds.object[0],
+      },
+      {
+        person: 'me',
+        expression: optionIds.expression.includes('more') ? 'more' : optionIds.expression[0],
+        object: optionIds.object.includes('cookies') ? 'cookies' : optionIds.object[0],
+      },
+      round.target,
     ]
     const preset = presets[(hintCount + 1) % presets.length]
     setSelected(preset)
     setHintCount((count) => count + 1)
-    setComplete(false)
+    setJustCompleted(false)
     setFeedback('换了一组句子积木，读一读看看意思变了吗？')
   }
 
-  function finishRound() {
+  async function finishRound() {
     if (!isTarget) {
-      setFeedback(`目标句子是“${targetSentence}”，我们再调一调积木顺序。`)
+      setFeedback(`目标句子是“${targetSentence}”，我们再调一调积木。`)
       return
     }
 
-    setComplete(true)
+    const completedAt = new Date().toISOString()
+    const record = {
+      levelId: round.id,
+      levelTitle: round.title,
+      difficulty: round.difficulty,
+      sentence: targetSentence,
+      selectedLabels: [
+        selectedOptions.person?.label,
+        selectedOptions.expression?.label,
+        selectedOptions.object?.label,
+      ].filter(Boolean) as string[],
+      expressionStarsEarned: 1 as const,
+      completedAt,
+    }
+
+    setJustCompleted(true)
     setFeedback(round.encouragement)
-    const result = createLevelResult(levelId)
+    setSaveStatus('正在保存本地完成记录...')
+
+    const result = createLevelResult(activeLevelId)
     if (result) {
       onComplete(result)
     }
+
+    const saveResult = await saveSentenceCompletionRecord(record)
+    setFileProgress(saveResult.progress)
+    setSaveStatus(
+      saveResult.mode === 'file'
+        ? '已保存到 local-data/sentence-progress.json'
+        : '本地文件接口不可用，已暂存到浏览器本地记录',
+    )
   }
 
   return (
@@ -166,15 +307,38 @@ export function SentenceBlocksGame({ levelId, onComplete, onExit }: LevelCompone
           <img className="sentence-island-badge" src={sentenceGameArt.island} alt="" />
           <div className="sentence-title-paper">
             <h1>句子积木岛</h1>
-            <p>把人物积木、表达积木、食物积木拼成一句话</p>
+            <p>三关由易到难，每完成一关点亮一颗表达星</p>
           </div>
           <div className="sentence-helper">
             <img src={sentenceGameArt.helperDeer} alt="" />
-            <p>{round.prompt}</p>
+            <p>
+              第 {round.order} 关 · {round.difficultyLabel}：{round.prompt}
+            </p>
           </div>
         </header>
 
         <section className="sentence-main-panel" aria-label="句子积木游戏">
+          <div className="sentence-level-strip" aria-label="句子积木岛关卡">
+            {sentenceLevelOrder.map((id, index) => {
+              const levelRound = roundsByLevel[id]
+              const isCurrent = id === activeLevelId
+              const isDone = displayedCompletedIds.has(id)
+
+              return (
+                <button
+                  className={`sentence-level-pill ${isCurrent ? 'is-current' : ''} ${isDone ? 'is-done' : ''}`}
+                  key={id}
+                  type="button"
+                  onClick={() => navigate(`/level/${id}`)}
+                >
+                  {isDone ? <Check size={18} /> : <span>{index + 1}</span>}
+                  <strong>{levelRound.difficultyLabel}</strong>
+                  <small>{levelRound.title}</small>
+                </button>
+              )
+            })}
+          </div>
+
           <div className="sentence-builder-top">
             <div className="sentence-slot-row" aria-label="已经选择的句子积木">
               {(['person', 'expression', 'object'] as BlockKind[]).map((kind) => {
@@ -195,7 +359,7 @@ export function SentenceBlocksGame({ levelId, onComplete, onExit }: LevelCompone
           </div>
 
           <div className="sentence-block-board">
-            {groups.map((group) => (
+            {visibleGroups.map((group) => (
               <div className="sentence-block-row" key={group.kind}>
                 <div className={`sentence-row-label is-${group.tone}`}>{group.label}</div>
                 <div className="sentence-options">
@@ -234,6 +398,11 @@ export function SentenceBlocksGame({ levelId, onComplete, onExit }: LevelCompone
               换一组
             </Button>
             <Button onClick={finishRound}>点亮表达星</Button>
+            {currentLevelCompleted && nextLevelId ? (
+              <Button variant="secondary" onClick={() => navigate(`/level/${nextLevelId}`)}>
+                下一关
+              </Button>
+            ) : null}
           </div>
         </section>
 
@@ -242,18 +411,21 @@ export function SentenceBlocksGame({ levelId, onComplete, onExit }: LevelCompone
           <img className="sentence-big-star" src={sentenceGameArt.rewardStar} alt="" />
           <div className="sentence-star-card">
             <strong>已收集表达星</strong>
-            <div className="sentence-star-list" aria-label={complete ? '已收集 1 颗表达星' : '暂未收集表达星'}>
+            <div className="sentence-star-list" aria-label={`已收集 ${expressionStars} 颗表达星`}>
               {[0, 1, 2].map((index) => (
-                <span className={complete && index === 0 ? 'is-earned' : ''} key={index}>
+                <span className={index < expressionStars ? 'is-earned' : ''} key={index}>
                   ★
                 </span>
               ))}
             </div>
-            <p>{complete ? '1 / 3 颗' : '0 / 3 颗'}</p>
+            <p>{expressionStars} / 3 颗</p>
           </div>
           <p className="sentence-listen-note">
-            {complete ? '你用积木告诉我你想喝水，我听懂了。' : '选好三块积木后，点亮第一颗表达星。'}
+            {currentLevelCompleted
+              ? `${round.encouragement} ${nextLevelId ? '可以继续挑战下一关。' : '三关全部完成！'}`
+              : '完成当前关卡后，会获得 1 颗表达星。'}
           </p>
+          <p className="sentence-save-note">{saveStatus}</p>
         </aside>
       </div>
     </main>
@@ -278,5 +450,11 @@ function findOption(kind: BlockKind, id?: string) {
     return undefined
   }
 
-  return [...people, ...expressions, ...objects].find((option) => option.kind === kind && option.id === id)
+  return [...people, ...expressions, ...objects].find(
+    (option) => option.kind === kind && option.id === id,
+  )
+}
+
+function isSentenceLevelId(levelId: string): levelId is SentenceLevelId {
+  return sentenceLevelOrder.includes(levelId as SentenceLevelId)
 }

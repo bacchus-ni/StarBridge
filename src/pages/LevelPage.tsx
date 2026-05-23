@@ -32,6 +32,7 @@ export function LevelPage() {
     return (
       <GameComponent
         difficulty={level.difficulty}
+        key={level.id}
         levelId={level.id}
         onComplete={handleComplete}
         onExit={() => navigate('/game')}

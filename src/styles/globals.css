@@ -990,7 +990,8 @@ h3 {
 
 .sentence-back-button,
 .sentence-speak-card,
-.sentence-option-card {
+.sentence-option-card,
+.sentence-level-pill {
   cursor: pointer;
   transition:
     transform 180ms ease,
@@ -1111,6 +1112,58 @@ h3 {
   gap: 6px;
   min-height: 500px;
   padding: 14px 22px;
+}
+
+.sentence-level-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.sentence-level-pill {
+  display: grid;
+  grid-template-columns: 28px minmax(0, auto) minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: #60422a;
+  background: rgba(255, 250, 235, 0.82);
+  border: 2px dashed rgba(123, 88, 54, 0.2);
+  font-weight: 950;
+  text-align: left;
+}
+
+.sentence-level-pill > span,
+.sentence-level-pill svg {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff8dc;
+  background: #b69b72;
+}
+
+.sentence-level-pill small {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sentence-level-pill.is-current {
+  color: #3d2c22;
+  background: #fff0bd;
+  border-color: rgba(242, 184, 75, 0.86);
+  box-shadow: 0 8px 16px rgba(80, 60, 40, 0.12);
+}
+
+.sentence-level-pill.is-done > span,
+.sentence-level-pill.is-done svg {
+  background: #69a35c;
 }
 
 .sentence-builder-top {
@@ -1415,9 +1468,20 @@ h3 {
   line-height: 1.5;
 }
 
+.sentence-save-note {
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: #2c6e91;
+  background: rgba(223, 242, 250, 0.82);
+  border: 2px dashed rgba(31, 115, 165, 0.22);
+  font-size: 14px;
+  font-weight: 900;
+}
+
 .sentence-back-button:hover,
 .sentence-speak-card:hover,
-.sentence-option-card:hover {
+.sentence-option-card:hover,
+.sentence-level-pill:hover {
   transform: translateY(-4px);
   filter: saturate(1.05);
   border-color: rgba(242, 184, 75, 0.9);
@@ -1426,13 +1490,15 @@ h3 {
 
 .sentence-back-button:active,
 .sentence-speak-card:active,
-.sentence-option-card:active {
+.sentence-option-card:active,
+.sentence-level-pill:active {
   transform: translateY(-1px) scale(0.99);
 }
 
 .sentence-back-button:focus-visible,
 .sentence-speak-card:focus-visible,
-.sentence-option-card:focus-visible {
+.sentence-option-card:focus-visible,
+.sentence-level-pill:focus-visible {
   outline: 4px solid rgba(31, 115, 165, 0.42);
   outline-offset: 4px;
 }
@@ -1567,8 +1633,17 @@ h3 {
   }
 
   .sentence-slot-row,
-  .sentence-options {
+  .sentence-options,
+  .sentence-level-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sentence-level-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .sentence-level-pill small {
+    white-space: normal;
   }
 
   .sentence-block-row {
