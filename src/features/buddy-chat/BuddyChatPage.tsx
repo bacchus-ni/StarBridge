@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   ChevronRight,
   Clock3,
@@ -21,23 +21,31 @@ import { Button } from '../../shared/components/Button'
 import { PageShell } from '../../shared/components/PageShell'
 import { SpeakButton } from '../../shared/components/SpeakButton'
 import { buddyChatDefaultThreadId, buddyChatSystemPrompt, buddyChatThreads } from '../../shared/data/buddyChat'
-import { requestDeepseekChatStream } from '../../shared/services/deepseekChat'
+import { requestDeepseekChat, requestDeepseekChatStream } from '../../shared/services/deepseekChat'
 import type {
   BuddyChatMessage,
   BuddyChatThread,
   DeepseekChatMessage,
   DeepseekChatResponse,
 } from '../../shared/types/chat'
+import {
+  buildBuddyChatTitleMessages,
+  createBuddyChatThread,
+  createFallbackBuddyChatTitle,
+  formatMinuteLabel,
+  sanitizeBuddyChatTitle,
+  shouldGenerateBuddyChatTitle,
+} from '../../shared/utils/buddyChat'
 
 function buildThreadMessages(thread: BuddyChatThread) {
-  return thread.messages
+  return thread.messages.map((message) => ({ ...message }))
 }
 
 function buildHistoryMessages(thread: BuddyChatThread, messages: BuddyChatMessage[]): DeepseekChatMessage[] {
   const systemMessage: DeepseekChatMessage = { role: 'system', content: buddyChatSystemPrompt }
   const historyMessages = messages.map<DeepseekChatMessage>((message) => ({
     role: message.speaker === 'child' ? 'user' : 'assistant',
-    content: `${message.timeLabel} ${message.content}`,
+    content: message.content,
   }))
   const continueMessage: DeepseekChatMessage = {
     role: 'user',
@@ -65,11 +73,28 @@ function getDeepseekStatusMessage(response: DeepseekChatResponse) {
   return '本地温和回复已接管'
 }
 
+function replaceMessageById(
+  messages: BuddyChatMessage[],
+  messageId: string,
+  content: string,
+) {
+  return messages.map((message) => (message.id === messageId ? { ...message, content } : message))
+}
+
 export function BuddyChatPage() {
   const shellStyle = {
     '--world-background-image': `url(${artAssets.homeBackground})`,
   } as CSSProperties
   const [collapsed, setCollapsed] = useState(false)
+  const [threads, setThreads] = useState<BuddyChatThread[]>(() =>
+    buddyChatThreads.map((thread) => ({
+      ...thread,
+      messages: buildThreadMessages(thread),
+      timeline: thread.timeline.map((item) => ({ ...item })),
+      summaryPoints: [...thread.summaryPoints],
+      quickQuestions: [...thread.quickQuestions],
+    })),
+  )
   const [activeThreadId, setActiveThreadId] = useState(buddyChatDefaultThreadId)
   const [draft, setDraft] = useState('')
   const [messagesByThread, setMessagesByThread] = useState<Record<string, BuddyChatMessage[]>>(() =>
@@ -79,23 +104,87 @@ export function BuddyChatPage() {
   const [statusMessage, setStatusMessage] = useState('已连接星桥小鹿')
   const [sidebarSearch, setSidebarSearch] = useState('')
   const messageIdRef = useRef(0)
+  const threadSequenceRef = useRef(0)
+  const messageListRef = useRef<HTMLDivElement>(null)
 
   const activeThread = useMemo(
-    () => buddyChatThreads.find((thread) => thread.id === activeThreadId) ?? buddyChatThreads[0],
-    [activeThreadId],
+    () => threads.find((thread) => thread.id === activeThreadId) ?? threads[0],
+    [activeThreadId, threads],
   )
 
   const visibleThreads = useMemo(() => {
     const keyword = sidebarSearch.trim().toLowerCase()
-    if (!keyword) return buddyChatThreads
+    if (!keyword) return threads
 
-    return buddyChatThreads.filter((thread) => {
+    return threads.filter((thread) => {
       const haystack = [thread.title, thread.subtitle, thread.preview, thread.moodLabel].join(' ').toLowerCase()
       return haystack.includes(keyword)
     })
-  }, [sidebarSearch])
+  }, [sidebarSearch, threads])
 
   const activeMessages = messagesByThread[activeThread.id] ?? activeThread.messages
+  const activeLastMessage = activeMessages.at(-1)
+  const quickReplies = activeThread.quickQuestions.slice(0, 4)
+
+  useEffect(() => {
+    const list = messageListRef.current
+    if (!list) return
+
+    list.scrollTo({ top: list.scrollHeight, behavior: 'smooth' })
+  }, [activeThreadId, activeMessages.length, activeLastMessage?.content])
+
+  const handleNewChat = () => {
+    const nextSequence = threadSequenceRef.current + 1
+    threadSequenceRef.current = nextSequence
+
+    const thread = createBuddyChatThread(nextSequence)
+    setThreads((current) => [thread, ...current])
+    setMessagesByThread((current) => ({
+      ...current,
+      [thread.id]: buildThreadMessages(thread),
+    }))
+    setActiveThreadId(thread.id)
+    setDraft('')
+    setSidebarSearch('')
+    setStatusMessage('已开启新聊天，小鹿精灵正在等你说第一句话')
+  }
+
+  const generateTitleForThread = async (threadId: string, firstUserMessage: string) => {
+    try {
+      const response = await requestDeepseekChat({
+        messages: buildBuddyChatTitleMessages(firstUserMessage),
+      })
+      const generatedTitle = response.fallback ? '' : sanitizeBuddyChatTitle(response.content)
+      const title = generatedTitle || createFallbackBuddyChatTitle(firstUserMessage)
+
+      setThreads((current) =>
+        current.map((thread) =>
+          thread.id === threadId && thread.title === '新聊天'
+            ? {
+                ...thread,
+                title,
+                subtitle: '小鹿根据第一句话整理了聊天主题',
+              }
+            : thread,
+        ),
+      )
+      setStatusMessage(response.fallback ? '已用本地规则生成聊天标题' : 'DeepSeek 已生成聊天标题')
+    } catch {
+      const title = createFallbackBuddyChatTitle(firstUserMessage)
+      setThreads((current) =>
+        current.map((thread) =>
+          thread.id === threadId && thread.title === '新聊天'
+            ? {
+                ...thread,
+                title,
+                subtitle: '小鹿根据第一句话整理了聊天主题',
+              }
+            : thread,
+        ),
+      )
+      setStatusMessage('已用本地规则生成聊天标题')
+    }
+  }
 
   const sendMessage = async (content: string) => {
     const text = content.trim()
@@ -110,27 +199,49 @@ export function BuddyChatPage() {
       id: `msg-${nextMessageId}`,
       speaker: 'child',
       content: text,
-      timeLabel: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
+      timeLabel: formatMinuteLabel(),
     }
 
     const thread = activeThread
     const threadId = thread.id
     const replyId = `reply-${nextMessageId}`
-    const replyTimeLabel = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
     const reply: BuddyChatMessage = {
       id: replyId,
       speaker: 'buddy',
       content: '',
-      timeLabel: replyTimeLabel,
+      timeLabel: formatMinuteLabel(),
     }
+    const shouldGenerateTitle = shouldGenerateBuddyChatTitle(thread, activeMessages)
     const nextMessages = [...activeMessages, userMessage]
+
+    setThreads((current) =>
+      current.map((item) =>
+        item.id === threadId
+          ? {
+              ...item,
+              preview: text,
+              subtitle: shouldGenerateTitle ? '小鹿正在根据第一句话整理主题' : item.subtitle,
+              startedAtLabel: item.startedAtLabel === '刚刚创建' ? '开始于 刚刚' : item.startedAtLabel,
+              moodLabel: shouldGenerateTitle ? '正在倾听' : item.moodLabel,
+              moodProgress: Math.max(item.moodProgress, 32),
+              timeline: shouldGenerateTitle
+                ? [...item.timeline, { timeLabel: userMessage.timeLabel, label: '你发出了第一句话', done: true }]
+                : item.timeline,
+            }
+          : item,
+      ),
+    )
     setMessagesByThread((current) => ({
       ...current,
       [threadId]: [...nextMessages, reply],
     }))
     setDraft('')
     setIsThinking(true)
-    setStatusMessage('DeepSeek 正在流式回复...')
+    setStatusMessage(shouldGenerateTitle ? 'DeepSeek 正在回复，并整理聊天标题...' : 'DeepSeek 正在流式回复...')
+
+    if (shouldGenerateTitle) {
+      void generateTitleForThread(threadId, text)
+    }
 
     try {
       const response = await requestDeepseekChatStream(
@@ -139,36 +250,37 @@ export function BuddyChatPage() {
         },
         {
           onDelta: ({ content: streamedContent }) => {
-            setMessagesByThread((current) => ({
-              ...current,
-              [threadId]: (current[threadId] ?? nextMessages).map((message) =>
-                message.id === replyId ? { ...message, content: streamedContent } : message,
-              ),
-            }))
+            setMessagesByThread((current) => {
+              const currentMessages = current[threadId] ?? [...nextMessages, reply]
+              return {
+                ...current,
+                [threadId]: replaceMessageById(currentMessages, replyId, streamedContent),
+              }
+            })
           },
         },
       )
 
-      setMessagesByThread((current) => ({
-        ...current,
-        [threadId]: (current[threadId] ?? nextMessages).map((message) =>
-          message.id === replyId ? { ...message, content: response.content } : message,
-        ),
-      }))
+      setMessagesByThread((current) => {
+        const currentMessages = current[threadId] ?? [...nextMessages, reply]
+        return {
+          ...current,
+          [threadId]: replaceMessageById(currentMessages, replyId, response.content),
+        }
+      })
       setStatusMessage(getDeepseekStatusMessage(response))
     } catch {
-      setMessagesByThread((current) => ({
-        ...current,
-        [threadId]: (current[threadId] ?? nextMessages).map((message) =>
-          message.id === replyId
-            ? {
-                ...message,
-                content:
-                  '我听见你了。先让自己慢一点，深呼吸一次，然后只做一件很小的事就好，比如喝一口水、坐稳一点，或者告诉我你最想先解决哪一部分。',
-              }
-            : message,
-        ),
-      }))
+      setMessagesByThread((current) => {
+        const currentMessages = current[threadId] ?? [...nextMessages, reply]
+        return {
+          ...current,
+          [threadId]: replaceMessageById(
+            currentMessages,
+            replyId,
+            '我听见你了。先让自己慢一点，深呼吸一次，然后只做一件很小的事就好，比如喝一口水、坐稳一点，或者告诉我你最想先解决哪一部分。',
+          ),
+        }
+      })
       setStatusMessage('已切换到本地温和回复')
     } finally {
       setIsThinking(false)
@@ -181,14 +293,10 @@ export function BuddyChatPage() {
 
   return (
     <PageShell activePath="/buddy-chat" activeRail="buddy" className="app-shell-world-bg" style={shellStyle}>
-      <div className="buddy-chat-layout">
+      <div className={collapsed ? 'buddy-chat-layout is-chat-sidebar-collapsed' : 'buddy-chat-layout'}>
         <aside className={collapsed ? 'buddy-chat-sidebar is-collapsed' : 'buddy-chat-sidebar'}>
           <div className="buddy-chat-sidebar-top">
-            <Button
-              className="buddy-chat-new-button"
-              icon={<Plus size={20} />}
-              onClick={() => setActiveThreadId(buddyChatDefaultThreadId)}
-            >
+            <Button className="buddy-chat-new-button" icon={<Plus size={20} />} onClick={handleNewChat}>
               新聊天
             </Button>
 
@@ -293,14 +401,12 @@ export function BuddyChatPage() {
               </div>
             </div>
 
-            <div className="buddy-chat-message-list">
+            <div className="buddy-chat-message-list" ref={messageListRef}>
               {activeMessages.map((message) => (
                 <article
                   key={message.id}
                   className={
-                    message.speaker === 'child'
-                      ? 'buddy-chat-message is-child'
-                      : 'buddy-chat-message is-buddy'
+                    message.speaker === 'child' ? 'buddy-chat-message is-child' : 'buddy-chat-message is-buddy'
                   }
                 >
                   <img
@@ -324,25 +430,24 @@ export function BuddyChatPage() {
             <div className="buddy-chat-quick-replies">
               <p>你可以这样回复我：</p>
               <div className="buddy-chat-chip-row">
-                {['我想冷静一下', '我需要一点时间', '我希望能说清楚', '我想把它修好', '换一组'].map(
-                  (item, index) => (
-                    <button
-                      key={item}
-                      className={index === 4 ? 'buddy-chat-reply-chip is-refresh' : 'buddy-chat-reply-chip'}
-                      type="button"
-                      onClick={() => {
-                        if (index === 4) {
-                          setStatusMessage('已换一组建议')
-                          return
-                        }
-                        handleQuestion(item)
-                      }}
-                    >
-                      {index === 4 ? <RefreshCw size={16} /> : null}
-                      {item}
-                    </button>
-                  ),
-                )}
+                {quickReplies.map((item) => (
+                  <button
+                    key={item}
+                    className="buddy-chat-reply-chip"
+                    type="button"
+                    onClick={() => handleQuestion(item)}
+                  >
+                    {item}
+                  </button>
+                ))}
+                <button
+                  className="buddy-chat-reply-chip is-refresh"
+                  type="button"
+                  onClick={() => setStatusMessage('已换一组建议')}
+                >
+                  <RefreshCw size={16} />
+                  换一组
+                </button>
               </div>
             </div>
 
@@ -364,11 +469,7 @@ export function BuddyChatPage() {
                   placeholder="输入你想对精灵小鹿说的话..."
                   rows={2}
                 />
-                <button
-                  className="buddy-chat-smile-button"
-                  type="button"
-                  aria-label="表情"
-                >
+                <button className="buddy-chat-smile-button" type="button" aria-label="表情">
                   <Smile size={18} />
                 </button>
               </div>
@@ -380,9 +481,7 @@ export function BuddyChatPage() {
               >
                 发送
               </Button>
-              <p className="buddy-chat-input-note">
-                按 Enter 发送，按 Shift + Enter 换行
-              </p>
+              <p className="buddy-chat-input-note">按 Enter 发送，按 Shift + Enter 换行</p>
             </div>
           </section>
         </main>
@@ -390,7 +489,7 @@ export function BuddyChatPage() {
         <div className="buddy-chat-float-note">
           <img src={buddyChatArt.deerBedtime} alt="" />
           <div>
-            <p>初始模式 已并连接</p>
+            <p>初始模式 已连接</p>
             <strong>{statusMessage}</strong>
           </div>
         </div>

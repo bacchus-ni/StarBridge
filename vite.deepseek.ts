@@ -186,12 +186,16 @@ function buildFallbackContent(messages?: DeepseekChatMessage[]) {
   const lastUserMessage =
     [...(messages ?? [])].reverse().find((item) => item.role === 'user')?.content ?? ''
 
+  if (lastUserMessage.includes('聊天生成一个温和、具体的短标题')) {
+    return buildFallbackTitle(lastUserMessage)
+  }
+
   if (lastUserMessage.includes('生气') || lastUserMessage.includes('烦躁')) {
-    return '我听见你的烦躁了。先别急着把它赶走，我们可以先慢慢吸气一次，再把今天最让你不舒服的那一刻说给我听。'
+    return '我听见你的烦躁了。先别急着把它赶走，我们可以慢慢吸气一次，再把今天最不舒服的那一刻说给我听。'
   }
 
   if (lastUserMessage.includes('害怕') || lastUserMessage.includes('担心')) {
-    return '我听见你的担心了。我们先把周围看一眼，找一个能让你安心的小东西，再告诉大人你现在需要陪伴。'
+    return '我听见你的担心了。我们先看一看周围，找一个能让你安心的小东西，再告诉可信赖的大人你现在需要陪伴。'
   }
 
   if (lastUserMessage.includes('谢谢')) {
@@ -203,6 +207,28 @@ function buildFallbackContent(messages?: DeepseekChatMessage[]) {
   }
 
   return '我听见你了。先让自己慢一点，深呼吸一次，再告诉我你最想先解决哪一件事。'
+}
+
+function buildFallbackTitle(message: string) {
+  const firstMessage = message.split('孩子的第一句话：').at(-1)?.trim() ?? ''
+
+  if (firstMessage.includes('不开心') || firstMessage.includes('难过') || firstMessage.includes('伤心')) {
+    return '说说难过'
+  }
+
+  if (firstMessage.includes('生气') || firstMessage.includes('烦')) {
+    return '整理生气'
+  }
+
+  if (firstMessage.includes('害怕') || firstMessage.includes('担心')) {
+    return '害怕时刻'
+  }
+
+  if (firstMessage.includes('谢谢') || firstMessage.includes('开心')) {
+    return '开心分享'
+  }
+
+  return '新的小聊'
 }
 
 function sendFallback(

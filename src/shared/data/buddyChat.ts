@@ -13,14 +13,14 @@ export const buddyChatThreads: BuddyChatThread[] = [
   {
     id: 'hard-feelings',
     title: '觉得难过的时候',
-    subtitle: '有些情绪没关系，我们一起慢慢看见它 ✨',
+    subtitle: '有些情绪没关系，我们一起慢慢看见它',
     preview: '我今天放学回家有点不开心，感觉有点烦躁。',
     startedAtLabel: '开始于 今天 15:30',
     avatar: buddyChatArt.deerChatAvatar,
     moodLabel: '有点烦躁',
     moodProgress: 45,
-    moodNote: '每种情绪都是独特的，你值得被认真听见。',
-    summaryPoints: ['孩子说出了不开心', '一起看见了烦躁', '用一句温柔的话接住情绪'],
+    moodNote: '每种情绪都值得被认真听见。',
+    summaryPoints: ['孩子说出了不开心', '一起看见了烦躁', '用一句温和的话接住情绪'],
     quickQuestions: ['我为什么会生气？', '怎么让自己冷静下来？', '如何向朋友表达难受？'],
     timeline: [
       { timeLabel: '15:30', label: '你表达了烦躁的情绪', done: true },
@@ -39,7 +39,7 @@ export const buddyChatThreads: BuddyChatThread[] = [
         id: 'hard-feelings-2',
         speaker: 'buddy',
         content:
-          '谢谢你愿意告诉我这些。烦躁的时候，心里像有一团小云朵，我们先一起看见它，再慢慢把它放轻一点好吗？你愿意告诉我，今天最让你难受的那一刻是什么吗？',
+          '谢谢你愿意告诉我这些。烦躁的时候，心里像有一团小云，我们先一起看见它，再慢慢把它放轻一点。你愿意告诉我，今天最让你难受的那一刻是什么吗？',
         timeLabel: '15:31',
       },
       {
@@ -52,7 +52,7 @@ export const buddyChatThreads: BuddyChatThread[] = [
         id: 'hard-feelings-4',
         speaker: 'buddy',
         content:
-          '原来是这样，难怪你会生气。生气不是坏事，它只是告诉我们这件事很重要。我们可以先做一次慢慢吸气，再一起想一句你想说的话。',
+          '原来是这样，难怪你会生气。生气不是坏事，它只是在告诉我们这件事很重要。我们可以先做一次慢慢吸气，再一起想一句你想说的话。',
         timeLabel: '15:34',
       },
     ],
@@ -127,7 +127,7 @@ export const buddyChatThreads: BuddyChatThread[] = [
     id: 'bedtime-chat',
     title: '睡前小聊',
     subtitle: '晚安前，把今天的小心事轻轻放好',
-    preview: '晚安小鹿，今天过得还不错哦~',
+    preview: '晚安小鹿，今天过得还不错哦。',
     startedAtLabel: '开始于 昨天 21:10',
     avatar: buddyChatArt.deerBedtime,
     moodLabel: '放松',
@@ -144,7 +144,7 @@ export const buddyChatThreads: BuddyChatThread[] = [
       {
         id: 'bedtime-chat-1',
         speaker: 'child',
-        content: '晚安小鹿，今天过得还不错哦~',
+        content: '晚安小鹿，今天过得还不错哦。',
         timeLabel: '21:10',
       },
       {
@@ -160,7 +160,7 @@ export const buddyChatThreads: BuddyChatThread[] = [
     id: 'afraid-room',
     title: '为什么会害怕',
     subtitle: '害怕的时候，我们先把房间变得更安全',
-    preview: '我有时候会害怕黑黑的房间。怎么办？',
+    preview: '我有时候会害怕黑黑的房间，怎么办？',
     startedAtLabel: '开始于 3 天前',
     avatar: buddyChatArt.deerChatAvatar,
     moodLabel: '有点担心',
