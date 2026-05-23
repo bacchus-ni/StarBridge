@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { Medal, Sparkles } from 'lucide-react'
-import { Button } from '../shared/components/Button'
 import { Card } from '../shared/components/Card'
 import { PageShell } from '../shared/components/PageShell'
 import { artAssets, islandArtById } from '../shared/assets/art'
@@ -29,19 +28,18 @@ export function GameHomePage() {
           <section className="hero-grid hero-grid-only home-hero-slot" aria-labelledby="home-title">
             <Card className="buddy-card">
               <div className="buddy-card-copy">
-                <div className="buddy-mark" aria-hidden="true">
-                  <Sparkles size={34} />
+                <div className="buddy-card-heading">
+                  <div className="buddy-mark" aria-hidden="true">
+                    <Sparkles size={30} />
+                  </div>
+                  <div className="buddy-card-title-row">
+                    <p className="section-label">星桥小助手</p>
+                    <h1 id="home-title">你好，小探险家</h1>
+                  </div>
                 </div>
-                <p className="section-label">星桥小助手</p>
-                <h1 id="home-title">你好，小探险家</h1>
                 <p>
                   今天我们一起收集 3 颗星星，练习表达、情绪和礼貌互动。
                 </p>
-                <div className="hero-actions">
-                  <Button as={Link} to="/level/sentence-basic-01">
-                    开始今日任务
-                  </Button>
-                </div>
               </div>
               <img className="buddy-art" src={artAssets.deer} alt="" />
             </Card>
