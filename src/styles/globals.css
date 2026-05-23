@@ -172,6 +172,10 @@ h3 {
   margin-bottom: 16px;
 }
 
+.hero-grid-only {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .buddy-card {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(260px, 34%);
@@ -251,6 +255,10 @@ h3 {
   grid-template-columns: 180px minmax(0, 1fr) 300px;
   gap: 18px;
   align-items: stretch;
+}
+
+.hero-grid-only + .world-layout {
+  margin-top: 6px;
 }
 
 .side-rail {
