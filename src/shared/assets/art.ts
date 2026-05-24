@@ -7,7 +7,7 @@ import mapBackgroundArt from '../../assets/map-background.png'
 import mapArt from '../../assets/map.png'
 import emotionLakeMapIsland from '../../assets/map-islands/emotion-lake.png'
 import greetingMapIsland from '../../assets/map-islands/greeting-island.png'
-import helpValleyMapIsland from '../../assets/map-islands/help-valley.png'
+import helpValleyMapIsland from '../../assets/help-valley/help-valley-island.png'
 import queueCastleMapIsland from '../../assets/map-islands/queue-castle.png'
 import sentenceBlocksMapIsland from '../../assets/map-islands/sentence-blocks-island.png'
 import railBadgeIcon from '../../assets/icons/badge.png'
@@ -15,6 +15,7 @@ import railBuddyIcon from '../../assets/icons/buddy.png'
 import railMapIcon from '../../assets/icons/map.png'
 import moodIslandArt from '../../assets/mood-island.png'
 import greetingIslandArt from '../../assets/greeting-game/greeting-island.png'
+import helpValleyIslandArt from '../../assets/help-valley/help-valley-island.png'
 import sentenceIslandArt from '../../assets/sentence-island.png'
 import type { IslandId } from '../types/game'
 
@@ -43,4 +44,5 @@ export const islandArtById: Record<IslandId, string> = {
   sentence_blocks: sentenceIslandArt,
   emotion_match: moodIslandArt,
   greeting_match: greetingIslandArt,
+  help_valley: helpValleyIslandArt,
 }

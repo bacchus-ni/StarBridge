@@ -39,7 +39,7 @@ export function GameDashboardFrame({ activeRail, children }: GameDashboardFrameP
                   <h1 id="home-title">你好，小探险家</h1>
                 </div>
               </div>
-              <p>今天我们一起收集 3 颗星星，练习表达、情绪和友好问候。</p>
+              <p>今天我们一起收集星星，练习表达、情绪、友好问候和主动求助。</p>
             </div>
             <Link className="buddy-art-link" to="/buddy-chat" aria-label="打开伙伴聊天">
               <img className="buddy-art" src={artAssets.deer} alt="" />

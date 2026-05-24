@@ -29,6 +29,15 @@ export const islands: IslandConfig[] = [
     themeSkill: 'greeting',
     levels: levels.filter((level) => level.islandId === 'greeting_match'),
   },
+  {
+    id: 'help_valley',
+    name: '求助山谷',
+    description: '看见困难，找到可靠的人，清楚说出需要的帮助',
+    route: '/level/help-basic-01',
+    badgeId: 'help-lantern',
+    themeSkill: 'ask_help',
+    levels: levels.filter((level) => level.islandId === 'help_valley'),
+  },
 ]
 
 export function getIslandById(islandId: IslandConfig['id']) {

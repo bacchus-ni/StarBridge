@@ -1,4 +1,4 @@
-export type IslandId = 'sentence_blocks' | 'emotion_match' | 'greeting_match'
+export type IslandId = 'sentence_blocks' | 'emotion_match' | 'greeting_match' | 'help_valley'
 
 export type Difficulty = 'basic' | 'medium' | 'advanced'
 
@@ -11,7 +11,7 @@ export type SkillTag =
   | 'use_polite_words'
   | 'take_turns'
 
-export type CardType = 'expression' | 'emotion' | 'greeting'
+export type CardType = 'expression' | 'emotion' | 'greeting' | 'help'
 
 export interface LevelComponentProps {
   levelId: string
@@ -48,7 +48,7 @@ export interface LevelConfig {
   targetSkill: SkillTag
   rewardCardIds: string[]
   rewardStars: number
-  mechanic: 'sentence_blocks' | 'emotion_match' | 'friendly_speech_match'
+  mechanic: 'sentence_blocks' | 'emotion_match' | 'friendly_speech_match' | 'help_valley'
 }
 
 export interface CardConfig {

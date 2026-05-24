@@ -22,6 +22,13 @@ export const badges: BadgeConfig[] = [
     description: '能先观察发生了什么，再选择合适的友好话语。',
     unlockText: '完成问候岛的友好话语连连看后解锁。',
   },
+  {
+    id: 'help-lantern',
+    islandId: 'help_valley',
+    name: '求助灯徽',
+    description: '遇到困难时，能停下来、找可靠的人，并清楚说出需要什么帮助。',
+    unlockText: '完成求助山谷三档任务后解锁。',
+  },
 ]
 
 export function getBadgeById(badgeId: string) {

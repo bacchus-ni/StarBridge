@@ -43,8 +43,9 @@ const mapNodes: MapNode[] = [
   {
     id: 'help-valley',
     title: '求助山谷',
-    description: '这里会放求助、等待和回应的练习。',
-    status: '规划中',
+    description: '看见困难，找到可靠的人，清楚说出需要的帮助。',
+    status: '已开放',
+    route: '/level/help-basic-01',
     art: mapIslandAssets.helpValley,
     x: '48%',
     y: '51%',

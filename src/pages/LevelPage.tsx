@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, Gift, Sparkles } from 'lucide-react'
 import { EmotionMatchGame } from '../features/levels/EmotionMatchGame'
 import { FriendlySpeechMatchGame } from '../features/levels/FriendlySpeechMatchGame'
+import { HelpValleyGame } from '../features/levels/HelpValleyGame'
 import { SentenceBlocksGame } from '../features/levels/SentenceBlocksGame'
 import { Button } from '../shared/components/Button'
 import { Card } from '../shared/components/Card'
@@ -31,7 +32,8 @@ export function LevelPage() {
   if (
     (level?.mechanic === 'sentence_blocks' ||
       level?.mechanic === 'emotion_match' ||
-      level?.mechanic === 'friendly_speech_match') &&
+      level?.mechanic === 'friendly_speech_match' ||
+      level?.mechanic === 'help_valley') &&
     GameComponent
   ) {
     return (
@@ -118,4 +120,5 @@ const levelComponents: Record<string, (props: LevelComponentProps) => ReactEleme
   sentence_blocks: SentenceBlocksGame,
   emotion_match: EmotionMatchGame,
   friendly_speech_match: FriendlySpeechMatchGame,
+  help_valley: HelpValleyGame,
 }

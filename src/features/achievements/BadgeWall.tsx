@@ -11,7 +11,7 @@ export function BadgeWall() {
     <Card className="map-panel achievement-badge-panel">
       <div className="section-heading">
         <p className="section-label">游戏成就</p>
-        <h2 id="achievements-title">三枚成长徽章</h2>
+        <h2 id="achievements-title">四枚成长徽章</h2>
         <span>每通关一个游戏，徽章就会从黑白变成彩色。</span>
       </div>
       <div className="game-badge-grid">

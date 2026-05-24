@@ -71,6 +71,36 @@ export const levels: LevelConfig[] = [
     rewardStars: 3,
     mechanic: 'friendly_speech_match',
   },
+  {
+    id: 'help-basic-01',
+    islandId: 'help_valley',
+    title: '第一关：断桥求助',
+    difficulty: 'basic',
+    targetSkill: 'ask_help',
+    rewardCardIds: ['bridge-help'],
+    rewardStars: 1,
+    mechanic: 'help_valley',
+  },
+  {
+    id: 'help-medium-01',
+    islandId: 'help_valley',
+    title: '第二关：迷路求助',
+    difficulty: 'medium',
+    targetSkill: 'ask_help',
+    rewardCardIds: ['lost-help'],
+    rewardStars: 1,
+    mechanic: 'help_valley',
+  },
+  {
+    id: 'help-advanced-01',
+    islandId: 'help_valley',
+    title: '第三关：身体不舒服',
+    difficulty: 'advanced',
+    targetSkill: 'ask_help',
+    rewardCardIds: ['body-signal-help'],
+    rewardStars: 1,
+    mechanic: 'help_valley',
+  },
 ]
 
 export function getLevelById(levelId: string) {

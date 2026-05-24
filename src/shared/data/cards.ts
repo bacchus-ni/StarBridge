@@ -57,6 +57,30 @@ export const cards: CardConfig[] = [
     voiceText: '友好话语',
     skillTag: 'greeting',
   },
+  {
+    id: 'bridge-help',
+    type: 'help',
+    name: '断桥求助卡',
+    description: '遇到过不去的地方时，停下来找可靠的人帮忙。',
+    voiceText: '你好，桥断了，我过不去，请你帮帮我。',
+    skillTag: 'ask_help',
+  },
+  {
+    id: 'lost-help',
+    type: 'help',
+    name: '迷路求助卡',
+    description: '迷路时找工作人员、老师或可靠的大人帮忙。',
+    voiceText: '我找不到营地了，请你帮我。',
+    skillTag: 'ask_help',
+  },
+  {
+    id: 'body-signal-help',
+    type: 'help',
+    name: '身体信号卡',
+    description: '身体不舒服时，要告诉老师或家长。',
+    voiceText: '我不舒服，想休息一下。',
+    skillTag: 'ask_help',
+  },
 ]
 
 export function getCardById(cardId: string) {

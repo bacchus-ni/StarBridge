@@ -198,7 +198,6 @@ export function FriendlySpeechMatchGame({ levelId, onComplete, onExit }: LevelCo
         <header className="greeting-game-header">
           <div className="greeting-island-wrap">
             <img className="greeting-island-badge" src={greetingGameArt.island} alt="" />
-            <strong>问候岛</strong>
           </div>
           <div className="greeting-title-paper">
             <h1>友好话语连连看</h1>

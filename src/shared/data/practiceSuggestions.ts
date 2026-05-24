@@ -26,11 +26,15 @@ export const practiceSuggestionTemplates: Record<SkillTag, PracticeSuggestion> =
     relatedSkill: 'greeting',
   },
   ask_help: {
-    id: 'toy-help',
-    title: '玩具时间：请求帮助',
-    scenario: '把一个喜欢的玩具放在稍微够不到的位置。',
-    steps: ['先等待 3 到 5 秒。', '提示孩子可以说“请帮帮我”。', '孩子表达后马上帮忙拿到玩具。'],
-    parentTip: '帮助发生在表达之后，让孩子感到表达是有用的。',
+    id: 'help-valley-transfer',
+    title: '生活小困难：主动求助',
+    scenario: '在零食、玩具或出门前的小准备里，安排一个孩子可能需要帮忙的温和情境。',
+    steps: [
+      '先等待几秒，给孩子发现困难和表达的时间。',
+      '用固定句式提示：“发生了什么？你需要谁帮忙？”',
+      '孩子说出或选择求助句后，马上回应：“我听见了，我来帮你。”',
+    ],
+    parentTip: '重点是“停下来、找可靠的人、说清楚需要什么帮助”，不要求一次说得很长。',
     relatedSkill: 'ask_help',
   },
   recognize_emotion: {
