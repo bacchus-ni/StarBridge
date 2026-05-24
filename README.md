@@ -1,4 +1,4 @@
-![icon](src\assets\icon.png)
+![icon](./src/assets/icon.png)
 
 # 🌉 StarBridge · 星桥计划
 
