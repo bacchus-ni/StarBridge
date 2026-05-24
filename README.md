@@ -1,3 +1,5 @@
+![icon](src\assets\icon.png)
+
 # 🌉 StarBridge · 星桥计划
 
 **面向孤独症儿童的表达成长游戏 —— 让一句「我想要水」不再难以说出口**
@@ -212,6 +214,41 @@ journey
 
 星桥计划想做的，就是陪这件事发生。
 
----
+
 
 <sub>Made with 🧡 for the children from the stars.</sub>
+
+
+---
+
+## 支持文献与资料链接
+
+### 官方指南与公共资料
+
+- [World Health Organization: Autism fact sheet](https://www.who.int/news-room/fact-sheets/detail/autism-spectrum-disorders)
+- [CDC: Data and Statistics on Autism Spectrum Disorder](https://www.cdc.gov/autism/data-research/index.html)
+- [卫生部办公厅关于印发《儿童孤独症诊疗康复指南》的通知](https://www.gov.cn/zwgk/2010-08/16/content_1680727.htm)
+- [中国残联等七部门：《孤独症儿童关爱促进行动实施方案（2024-2028年）》](https://www.cdpf.org.cn/zwgk/zcwj/wjfb/e9e23982df5248e3b0d82d180c368996.htm)
+
+### 中文研究与专业文章
+
+- [孤独症谱系障碍儿童语言康复线上教学与实践](https://www.chsr.cn/zh/article/doi/10.3969/j.issn.1672-4933.2024.05.022/)
+- [孤独症谱系障碍儿童数字化认知康复训练个案分析](https://www.chsr.cn/zh/article/doi/10.3969/j.issn.1672-4933.2023.03.027/)
+- [孤独症儿童家长使用数字化工具干预的质性研究](https://www.chsr.cn/zh/article/doi/10.3969/j.issn.1672-4933.2024.01.027/)
+- [孤独症谱系障碍儿童家庭干预模式分析](https://www.chsr.cn/en/article/doi/10.3969/j.issn.1672-4933.2026.01.013/)
+- [阶梯式儿童语言康复模式的构建与运用](https://www.chsr.cn/rc-pub/front/front-article/download/40065383/lowqualitypdf/Construction%20and%20Application%20of%20Child%20Language%20Intervention%20ECNU%20Ladder%20Model.pdf)
+- [自然教学策略：自闭症干预的 PRT 技术](https://xbjk.ecnu.edu.cn/CN/abstract/abstract8758.shtml)
+- [ADOPT 模式训练在学龄孤独症谱系障碍儿童中的临床效果](https://www.chsr.cn/rc-pub/front/front-article/download/68584598/lowqualitypdf/ADOPT%E6%A8%A1%E5%BC%8F%E8%AE%AD%E7%BB%83%E5%9C%A8%E5%AD%A6%E9%BE%84%E5%AD%A4%E7%8B%AC%E7%97%87%E8%B0%B1%E7%B3%BB%E9%9A%9C%E7%A2%8D%E5%84%BF%E7%AB%A5%E4%B8%AD%E7%9A%84%E4%B8%B4%E5%BA%8A%E6%95%88%E6%9E%9C.pdf)
+
+### 英文系统综述、Meta-analysis 与 RCT
+
+- [Wang T, et al. Digital interventions for autism spectrum disorders: A systematic review and meta-analysis](https://pubmed.ncbi.nlm.nih.gov/39347529/)
+- [Xu F, et al. The Use of Digital Interventions for Children and Adolescents with Autism Spectrum Disorder: A Meta-Analysis](https://pubmed.ncbi.nlm.nih.gov/39325282/)
+- [Carneiro T, et al. Serious Games for Developing Social Skills in Children and Adolescents with Autism Spectrum Disorder: A Systematic Review](https://pubmed.ncbi.nlm.nih.gov/38470619/)
+- [Silva GM, et al. Interventions with Serious Games and Entertainment Games in Autism Spectrum Disorder: A Systematic Review](https://pubmed.ncbi.nlm.nih.gov/34595981/)
+- [Schreibman L, et al. Naturalistic Developmental Behavioral Interventions](https://pubmed.ncbi.nlm.nih.gov/25737021/)
+- [Gengoux GW, et al. A Pivotal Response Treatment Package for Children With Autism Spectrum Disorder: An RCT](https://pubmed.ncbi.nlm.nih.gov/31387868/)
+- [McDaniel J, et al. Effects of pivotal response treatment on reciprocal vocal contingency in a randomized controlled trial of children with autism spectrum disorder](https://pubmed.ncbi.nlm.nih.gov/32054315/)
+- [Cheong PL, et al. Telehealth-Based Parent-Mediated Pivotal Response Treatment for Preschool Children With Autism Spectrum Disorder](https://pubmed.ncbi.nlm.nih.gov/41533270/)
+- [Wang L, et al. Using Pivotal Response Treatment to Improve Language Functions of Autistic Children in Special Schools](https://pubmed.ncbi.nlm.nih.gov/37101061/)
+- [Toma MV, et al. Extended Reality-Based Mobile App Solutions for the Therapy of Children With Autism Spectrum Disorders](https://pubmed.ncbi.nlm.nih.gov/38373032/)
