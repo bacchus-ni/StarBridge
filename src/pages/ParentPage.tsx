@@ -31,7 +31,10 @@ export function ParentPage() {
   useEffect(() => {
     let isCurrent = true
 
-    setAdvice({ status: 'loading', content: fallbackAdvice, source: 'fallback' })
+    Promise.resolve().then(() => {
+      if (!isCurrent) return
+      setAdvice({ status: 'loading', content: fallbackAdvice, source: 'fallback' })
+    })
 
     getDeepseekParentAdvice(progress)
       .then((result: ParentAdviceResult) => {

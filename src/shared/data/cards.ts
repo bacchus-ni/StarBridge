@@ -81,6 +81,30 @@ export const cards: CardConfig[] = [
     voiceText: '我不舒服，想休息一下。',
     skillTag: 'ask_help',
   },
+  {
+    id: 'market-milk',
+    type: 'daily_life',
+    name: '牛奶购物卡',
+    description: '听清楚要买什么，并找到对应商品。',
+    voiceText: '我要买牛奶。',
+    skillTag: 'daily_life_choice',
+  },
+  {
+    id: 'market-fruit',
+    type: 'daily_life',
+    name: '水果选择卡',
+    description: '知道香蕉属于水果，可以按类别选择。',
+    voiceText: '香蕉是水果。',
+    skillTag: 'daily_life_choice',
+  },
+  {
+    id: 'market-medicine',
+    type: 'daily_life',
+    name: '照顾家人卡',
+    description: '根据感冒情景选择合适的帮助用品。',
+    voiceText: '妈妈感冒了，可以买药品。',
+    skillTag: 'daily_life_choice',
+  },
 ]
 
 export function getCardById(cardId: string) {

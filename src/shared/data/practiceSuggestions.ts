@@ -69,4 +69,16 @@ export const practiceSuggestionTemplates: Record<SkillTag, PracticeSuggestion> =
     parentTip: '轮流时间要短，成功体验比持续时长更重要。',
     relatedSkill: 'take_turns',
   },
+  daily_life_choice: {
+    id: 'market-life-choice',
+    title: '家庭小采购：按需求选择物品',
+    scenario: '在吃点心、收拾书包或照顾家人时，准备 2 到 3 个真实物品让孩子选择。',
+    steps: [
+      '先给出清楚任务：“我们要找一个水果”或“感冒时需要什么？”',
+      '把正确物品和两个干扰物放在一起，等待孩子指认、拿取或说出答案。',
+      '孩子选对后温和复述：“你找到了香蕉，香蕉是水果。”',
+    ],
+    parentTip: '从“买指定物品”开始，再慢慢过渡到类别和情景选择；选错时只提示再看看。',
+    relatedSkill: 'daily_life_choice',
+  },
 }

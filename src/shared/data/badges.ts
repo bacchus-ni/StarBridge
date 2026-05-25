@@ -29,6 +29,13 @@ export const badges: BadgeConfig[] = [
     description: '遇到困难时，能停下来、找可靠的人，并清楚说出需要什么帮助。',
     unlockText: '完成求助山谷三档任务后解锁。',
   },
+  {
+    id: 'market-helper',
+    islandId: 'starlight_market',
+    name: '购物徽章',
+    description: '能听懂购物任务，按物品、类别和生活情景选择合适商品。',
+    unlockText: '完成星光超市三档购物任务后解锁。',
+  },
 ]
 
 export function getBadgeById(badgeId: string) {

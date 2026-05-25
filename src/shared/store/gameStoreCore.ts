@@ -15,6 +15,7 @@ export const initialProgress: PlayerProgress = {
     'emotion-helper': 0,
     'friendly-speech': 0,
     'help-lantern': 0,
+    'market-helper': 0,
   },
   buddyGrowth: {
     stage: 1,

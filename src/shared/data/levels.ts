@@ -101,6 +101,36 @@ export const levels: LevelConfig[] = [
     rewardStars: 1,
     mechanic: 'help_valley',
   },
+  {
+    id: 'market-basic-01',
+    islandId: 'starlight_market',
+    title: '第 1 关：买牛奶',
+    difficulty: 'basic',
+    targetSkill: 'daily_life_choice',
+    rewardCardIds: ['market-milk'],
+    rewardStars: 1,
+    mechanic: 'starlight_market',
+  },
+  {
+    id: 'market-medium-01',
+    islandId: 'starlight_market',
+    title: '第 2 关：找水果',
+    difficulty: 'medium',
+    targetSkill: 'daily_life_choice',
+    rewardCardIds: ['market-fruit'],
+    rewardStars: 1,
+    mechanic: 'starlight_market',
+  },
+  {
+    id: 'market-advanced-01',
+    islandId: 'starlight_market',
+    title: '第 3 关：妈妈感冒了',
+    difficulty: 'advanced',
+    targetSkill: 'daily_life_choice',
+    rewardCardIds: ['market-medicine'],
+    rewardStars: 1,
+    mechanic: 'starlight_market',
+  },
 ]
 
 export function getLevelById(levelId: string) {

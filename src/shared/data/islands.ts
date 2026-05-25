@@ -38,6 +38,15 @@ export const islands: IslandConfig[] = [
     themeSkill: 'ask_help',
     levels: levels.filter((level) => level.islandId === 'help_valley'),
   },
+  {
+    id: 'starlight_market',
+    name: '星光超市',
+    description: '根据任务选择合适商品，拖进购物车',
+    route: '/level/market-basic-01',
+    badgeId: 'market-helper',
+    themeSkill: 'daily_life_choice',
+    levels: levels.filter((level) => level.islandId === 'starlight_market'),
+  },
 ]
 
 export function getIslandById(islandId: IslandConfig['id']) {

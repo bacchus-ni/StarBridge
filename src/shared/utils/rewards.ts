@@ -36,6 +36,8 @@ export function getBadgeKey(islandId: IslandId) {
       return 'friendly-speech'
     case 'help_valley':
       return 'help-lantern'
+    case 'starlight_market':
+      return 'market-helper'
   }
 }
 

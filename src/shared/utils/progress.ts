@@ -10,6 +10,7 @@ export const skillLabels: Record<SkillTag, string> = {
   understand_others: '理解他人感受',
   use_polite_words: '使用请和谢谢',
   take_turns: '轮流互动',
+  daily_life_choice: '生活情景选择',
 }
 
 export const skillDescriptions: Record<SkillTag, string> = {
@@ -20,6 +21,7 @@ export const skillDescriptions: Record<SkillTag, string> = {
   understand_others: '开始观察别人可能正在经历的情绪。',
   use_polite_words: '在真实互动里使用礼貌语建立良好关系。',
   take_turns: '理解等待和轮流，让互动更顺畅。',
+  daily_life_choice: '能听懂生活任务，并在物品、类别和情景中做出合适选择。',
 }
 
 export function getRecommendedLevel(progress: PlayerProgress) {
