@@ -8,6 +8,14 @@ build/
 local-data/*.json
 !local-data/.gitkeep
 
+# Generated poster and imagegen scratch artifacts.
+docs/poster-redesign/
+docs/screenshots/poster.png
+docs/screenshots/poster_80x200cm_150dpi_superres.jpg
+docs/screenshots/poster_80x200cm_150dpi_superres.png
+output/imagegen/
+tmp/imagegen/
+
 .env
 .env.*
 !.env.example
