@@ -58,7 +58,7 @@ h3 {
 .app-shell {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: clamp(220px, 17vw, 280px) minmax(0, 1fr);
+  grid-template-columns: clamp(260px, 20vw, 300px) minmax(0, 1fr);
   gap: 0;
   padding: 18px 24px 18px 26px;
   transition: grid-template-columns 220ms ease;
@@ -220,9 +220,9 @@ h3 {
 
 .sidebar-quick-nav {
   display: grid;
-  grid-template-columns: repeat(3, 52px);
+  grid-template-columns: repeat(4, 52px);
   gap: 10px;
-  width: min(180px, calc(100% - 24px));
+  width: min(242px, calc(100% - 24px));
   margin: auto 0 0 18px;
   padding: 8px;
   border-radius: 8px;
@@ -239,6 +239,7 @@ h3 {
 .sidebar-quick-link {
   width: 52px;
   height: 56px;
+  padding: 0;
   border-radius: 8px;
   color: var(--color-text);
   background: rgba(255, 250, 235, 0.86);
@@ -250,7 +251,12 @@ h3 {
     border-color 180ms ease;
 }
 
-.sidebar-quick-link.is-active {
+.voice-toggle {
+  font: inherit;
+}
+
+.sidebar-quick-link.is-active,
+.voice-toggle.is-on {
   color: #fff8dc;
   background: var(--color-primary);
   border-color: rgba(255, 255, 255, 0.78);
@@ -1375,6 +1381,12 @@ h3 {
     box-shadow 180ms ease,
     background 180ms ease,
     border-color 180ms ease;
+}
+
+.speak-button:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.4);
+  opacity: 0.62;
 }
 
 .sentence-board,
@@ -2966,6 +2978,12 @@ h3 {
   background: #86aeda;
   border: 2px solid rgba(255, 255, 255, 0.8);
   box-shadow: 0 6px 12px rgba(80, 60, 40, 0.1);
+}
+
+.buddy-chat-play-button:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.35);
+  opacity: 0.55;
 }
 
 .buddy-chat-quick-replies {
@@ -6254,7 +6272,7 @@ h3 {
   }
 
   .app-shell.is-sidebar-collapsed .sidebar-quick-nav {
-    grid-template-columns: repeat(3, 52px);
+    grid-template-columns: repeat(4, 52px);
     width: auto;
     margin: 0;
   }
@@ -6505,7 +6523,7 @@ h3 {
   }
 
   .app-shell.is-sidebar-collapsed .sidebar-quick-nav {
-    grid-template-columns: repeat(3, 52px);
+    grid-template-columns: repeat(4, 52px);
     width: fit-content;
   }
 

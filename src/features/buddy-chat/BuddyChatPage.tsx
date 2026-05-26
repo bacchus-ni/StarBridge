@@ -14,6 +14,7 @@ import {
   Smile,
   MessageCircleMore,
   Plus,
+  Volume2,
 } from 'lucide-react'
 import { buddyChatArt } from '../../shared/assets/buddyChatArt'
 import { artAssets } from '../../shared/assets/art'
@@ -36,6 +37,10 @@ import {
   sanitizeBuddyChatTitle,
   shouldGenerateBuddyChatTitle,
 } from '../../shared/utils/buddyChat'
+import { speak } from '../../shared/utils/speech'
+
+const localBuddyReply =
+  '我听见你了。先让自己慢一点，深呼吸一次，然后只做一件很小的事就好，比如喝一口水、坐稳一点，或者告诉我你最想先解决哪一部分。'
 
 function buildThreadMessages(thread: BuddyChatThread) {
   return thread.messages.map((message) => ({ ...message }))
@@ -269,19 +274,17 @@ export function BuddyChatPage() {
         }
       })
       setStatusMessage(getDeepseekStatusMessage(response))
+      void speak(response.content)
     } catch {
       setMessagesByThread((current) => {
         const currentMessages = current[threadId] ?? [...nextMessages, reply]
         return {
           ...current,
-          [threadId]: replaceMessageById(
-            currentMessages,
-            replyId,
-            '我听见你了。先让自己慢一点，深呼吸一次，然后只做一件很小的事就好，比如喝一口水、坐稳一点，或者告诉我你最想先解决哪一部分。',
-          ),
+          [threadId]: replaceMessageById(currentMessages, replyId, localBuddyReply),
         }
       })
       setStatusMessage('已切换到本地温和回复')
+      void speak(localBuddyReply)
     } finally {
       setIsThinking(false)
     }
@@ -417,11 +420,15 @@ export function BuddyChatPage() {
                   <div className="buddy-chat-bubble">
                     <p>{message.content || (message.speaker === 'buddy' ? '小鹿正在输入...' : '')}</p>
                     <span>{message.timeLabel}</span>
-                    {message.speaker === 'child' ? (
-                      <button className="buddy-chat-play-button" type="button" aria-label="播放消息">
-                        <Send size={14} />
-                      </button>
-                    ) : null}
+                    <button
+                      className="buddy-chat-play-button"
+                      type="button"
+                      aria-label={`朗读消息：${message.content || '小鹿正在输入'}`}
+                      disabled={!message.content.trim()}
+                      onClick={() => speak(message.content)}
+                    >
+                      <Volume2 size={14} />
+                    </button>
                   </div>
                 </article>
               ))}

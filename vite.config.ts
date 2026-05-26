@@ -4,6 +4,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import type { Plugin } from 'vite'
+import { doubaoTtsProxyPlugin } from './vite.doubao-tts'
 import { deepseekProxyPlugin } from './vite.deepseek'
 
 type SentenceCompletionRecord = {
@@ -126,6 +127,14 @@ export default defineConfig(({ mode }) => {
         apiKey: firstEnvValue(env.DEEPSEEK_API_KEY, env.VITE_DEEPSEEK_API_KEY),
         apiBaseUrl: firstEnvValue(env.DEEPSEEK_API_BASE_URL),
         model: firstEnvValue(env.DEEPSEEK_MODEL),
+      }),
+      doubaoTtsProxyPlugin({
+        apiKey: firstEnvValue(env.VOLCENGINE_API_KEY),
+        appId: firstEnvValue(env.VOLCENGINE_APP_ID),
+        accessKey: firstEnvValue(env.VOLCENGINE_ACCESS_KEY),
+        speakerId: firstEnvValue(env.DOUBAO_TTS_SPEAKER_ID),
+        resourceId: firstEnvValue(env.DOUBAO_TTS_RESOURCE_ID),
+        model: firstEnvValue(env.DOUBAO_TTS_MODEL),
       }),
     ],
     server: {

@@ -1,7 +1,12 @@
 import { useEffect, useState, type CSSProperties, type PropsWithChildren } from 'react'
 import { Link } from 'react-router-dom'
-import { Info, Map, PanelLeft, PanelLeftClose, Users } from 'lucide-react'
+import { Info, Map, PanelLeft, PanelLeftClose, Users, Volume2, VolumeX } from 'lucide-react'
 import { artAssets } from '../assets/art'
+import {
+  getVoiceEnabledStorageKey,
+  isVoiceEnabled,
+  setVoiceEnabled,
+} from '../utils/speech'
 
 export type PageShellActivePath =
   | '/game'
@@ -78,6 +83,7 @@ export function PageShell({
       return false
     }
   })
+  const [voiceEnabled, setVoiceEnabledState] = useState(() => isVoiceEnabled())
   const shellClassName = [
     'app-shell',
     className,
@@ -93,6 +99,25 @@ export function PageShell({
       // Ignore storage failures; the sidebar still works for the current page.
     }
   }, [isSidebarCollapsed])
+
+  useEffect(() => {
+    function syncVoiceEnabled(event: StorageEvent) {
+      if (event.key === getVoiceEnabledStorageKey()) {
+        setVoiceEnabledState(isVoiceEnabled())
+      }
+    }
+
+    window.addEventListener('storage', syncVoiceEnabled)
+    return () => window.removeEventListener('storage', syncVoiceEnabled)
+  }, [])
+
+  function toggleVoice() {
+    setVoiceEnabledState((current) => {
+      const next = !current
+      setVoiceEnabled(next)
+      return next
+    })
+  }
 
   return (
     <div className={shellClassName} style={style}>
@@ -148,6 +173,21 @@ export function PageShell({
               </Link>
             )
           })}
+          <button
+            className={
+              voiceEnabled
+                ? 'sidebar-quick-link voice-toggle is-on'
+                : 'sidebar-quick-link voice-toggle'
+            }
+            type="button"
+            aria-pressed={voiceEnabled}
+            aria-label={voiceEnabled ? '关闭声音朗读' : '开启声音朗读'}
+            title={voiceEnabled ? '关闭声音朗读' : '开启声音朗读'}
+            onClick={toggleVoice}
+          >
+            {voiceEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
+            <span className="visually-hidden">{voiceEnabled ? '声音已开启' : '声音已关闭'}</span>
+          </button>
         </nav>
       </aside>
 
